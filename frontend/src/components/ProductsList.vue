@@ -36,6 +36,9 @@
       <button class="m-3 btn btn-sm btn-danger" @click="removeAllproducts">
         Remove All
       </button>
+      <button class="m-3 btn btn-sm btn-danger" @click="exportProducts">
+        Export
+      </button>
     </div>
     <div class="col-md-6">
       <div v-if="currentproduct.id">
@@ -105,6 +108,21 @@ export default class productsList extends Vue {
     productDataService.deleteAll()
       .then((response) => {
         console.log(response.data);
+        this.refreshList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  exportProducts() {
+    productDataService.export().then((response) => {
+        var FILE = window.URL.createObjectURL(new Blob([response.data]));
+        var docUrl = document.createElement('a');
+        docUrl.href = FILE;
+        docUrl.setAttribute('download', 'file.pdf');
+        document.body.appendChild(docUrl);
+        docUrl.click();
         this.refreshList();
       })
       .catch((e) => {

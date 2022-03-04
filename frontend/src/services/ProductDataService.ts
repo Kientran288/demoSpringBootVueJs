@@ -1,4 +1,5 @@
 import http from "@/services/http-common";
+import axios from "axios";
 
 class ProductDataService {
   getAll() {
@@ -27,6 +28,13 @@ class ProductDataService {
 
   findByTitle(name: string) {
     return http.get(`/products?name=${name}`);
+  }
+  export() {
+    return axios({
+      url: 'http://localhost:8080/api-kientt/products/export/pdf',
+      method: 'GET',
+      responseType: 'blob',
+    });
   }
 }
 

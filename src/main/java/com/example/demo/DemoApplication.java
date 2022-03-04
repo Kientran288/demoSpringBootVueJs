@@ -14,12 +14,14 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
     
+    @SuppressWarnings("deprecation")
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins("http://localhost:8081");
+                registry.addMapping("/products/**").allowedOrigins("http://localhost:8081");
             }
         };
     }

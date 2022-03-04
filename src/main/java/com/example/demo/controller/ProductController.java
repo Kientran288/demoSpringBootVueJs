@@ -1,8 +1,14 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.Product;
+import com.example.demo.pdf.ProductPDFExporter;
 import com.example.demo.repository.ProductRepository;
+import com.lowagie.text.DocumentException;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api-kientt")
 public class ProductController {
@@ -104,5 +113,20 @@ public class ProductController {
         }
 
     }
-
+    
+    @GetMapping("/products/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+         
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        
+        List<Product> listProducts = ProductRepository.findAll();
+         
+        ProductPDFExporter exporter = new ProductPDFExporter(listProducts);
+        exporter.export(response);
+    }
 }

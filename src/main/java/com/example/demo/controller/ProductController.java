@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.Product;
-import com.example.demo.pdf.ProductPDFExporter;
 import com.example.demo.repository.ProductRepository;
 import com.lowagie.text.DocumentException;
 
@@ -113,20 +112,5 @@ public class ProductController {
         }
 
     }
-    
-    @GetMapping("/products/export/pdf")
-    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
-        response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-         
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
-        response.setHeader(headerKey, headerValue);
-        
-        List<Product> listProducts = ProductRepository.findAll();
-         
-        ProductPDFExporter exporter = new ProductPDFExporter(listProducts);
-        exporter.export(response);
-    }
+
 }
